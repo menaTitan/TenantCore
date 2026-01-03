@@ -1,0 +1,12 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    
+    if (controller == "TenantAdmin" || controller == "SuperAdmin")
+    {
+        Layout = "_DashboardLayout";
+    }
+    else
+    {
+        Layout = "_PublicLayout";
+    }
+}

@@ -1,0 +1,50 @@
+@model TenantCore.Application.DTOs.TenantDto
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Organization Settings</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Organization Details</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="UpdateSettings" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                
+                <div class="mb-3">
+                    <label for="Name" class="form-label">Organization Name</label>
+                    <input type="text" name="Name" class="form-control" value="@Model.Name" required />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="Domain" class="form-label">Domain</label>
+                    <input type="text" name="Domain" class="form-control" value="@Model.Domain" required />
+                    <small class="text-muted">Lowercase letters, numbers, and hyphens only</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="BillingEmail" class="form-label">Billing Email</label>
+                    <input type="email" name="BillingEmail" class="form-control" value="@Model.BillingEmail" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="BillingAddress" class="form-label">Billing Address</label>
+                    <textarea name="BillingAddress" class="form-control" rows="3">@Model.BillingAddress</textarea>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

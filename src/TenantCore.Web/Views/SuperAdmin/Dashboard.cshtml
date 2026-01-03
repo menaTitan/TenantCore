@@ -1,0 +1,72 @@
+@model IEnumerable<TenantCore.Application.DTOs.TenantDto>
+@{
+    ViewData["Title"] = "SuperAdmin Dashboard";
+}
+
+<h1>SuperAdmin Dashboard</h1>
+<hr />
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Tenants</h5>
+                <h2>@ViewBag.TotalTenants</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Active Tenants</h5>
+                <h2>@ViewBag.ActiveTenants</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Subscription Plans</h5>
+                <h2>@ViewBag.TotalPlans</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Recent Tenants</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Domain</th>
+            <th>Status</th>
+            <th>Users</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tenant in Model)
+        {
+            <tr>
+                <td>@tenant.Name</td>
+                <td>@tenant.Domain</td>
+                <td>
+                    @if (tenant.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Inactive</span>
+                    }
+                </td>
+                <td>@tenant.UserCount</td>
+                <td>@tenant.CreatedAt.ToShortDateString()</td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-primary">View</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

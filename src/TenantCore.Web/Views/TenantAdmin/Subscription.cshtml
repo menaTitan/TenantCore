@@ -1,0 +1,96 @@
+@model TenantCore.Application.DTOs.SubscriptionDto
+
+@{
+    ViewData["Title"] = "Subscription";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Subscription Management</h1>
+
+    @if (Model != null)
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Current Subscription</h6>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-4">Plan</dt>
+                            <dd class="col-sm-8">
+                                <h5>@Model.PlanName</h5>
+                            </dd>
+
+                            <dt class="col-sm-4">Status</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-@(Model.IsActive ? "success" : "warning")">
+                                    @Model.Status
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4">Price</dt>
+                            <dd class="col-sm-8">$@Model.PricePerMonth/month</dd>
+
+                            <dt class="col-sm-4">Start Date</dt>
+                            <dd class="col-sm-8">@Model.StartDate.ToShortDateString()</dd>
+
+                            <dt class="col-sm-4">End Date</dt>
+                            <dd class="col-sm-8">@Model.EndDate.ToShortDateString()</dd>
+
+                            <dt class="col-sm-4">Days Remaining</dt>
+                            <dd class="col-sm-8">@Model.DaysUntilExpiration days</dd>
+
+                            <dt class="col-sm-4">Auto Renew</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.AutoRenew)
+                                {
+                                    <span class="text-success"><i class="fas fa-check-circle"></i> Enabled</span>
+                                }
+                                else
+                                {
+                                    <span class="text-warning"><i class="fas fa-times-circle"></i> Disabled</span>
+                                }
+                            </dd>
+                        </dl>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <a asp-action="Upgrade" class="btn btn-primary">Upgrade Plan</a>
+                            <form asp-action="CancelSubscription" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel your subscription?');">
+                                <button type="submit" class="btn btn-danger">Cancel Subscription</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Available Plans</h6>
+                    </div>
+                    <div class="card-body">
+                        @if (ViewBag.Plans != null)
+                        {
+                            foreach (var plan in ViewBag.Plans)
+                            {
+                                <div class="mb-3 p-3 border rounded">
+                                    <h6>@plan.Name</h6>
+                                    <p class="mb-2"><strong>$@plan.PricePerMonth</strong>/month</p>
+                                    <p class="small mb-0">@plan.Description</p>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5>No Active Subscription</h5>
+            <p>You don't have an active subscription. Please upgrade to continue using our services.</p>
+            <a asp-action="Upgrade" class="btn btn-primary">View Plans</a>
+        </div>
+    }
+</div>

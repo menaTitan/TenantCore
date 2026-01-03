@@ -1,0 +1,364 @@
+@model TenantCore.Application.DTOs.TenantDto
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var subscription = Model.CurrentSubscription;
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <p class="text-secondary mb-0">Welcome back, @User.Identity?.Name</p>
+        </div>
+        <a asp-action="Reports" class="btn btn-primary shadow-sm">
+            <i class="fas fa-chart-line fa-sm text-white-50 me-2"></i>View Reports
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-primary border-4 h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Subscription Plan
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @(subscription?.PlanName ?? "Free Trial")
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-success border-4 h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Status
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @(subscription?.Status.ToString() ?? "Active")
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-info border-4 h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Users
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.UserCount <span class="text-muted small">/ @(subscription?.MaxUsers ?? 5)</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-warning border-4 h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Storage Used
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                45% <span class="text-muted small">of @(subscription?.MaxStorageGB ?? 1) GB</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hdd fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview"
+                    type="button" role="tab" aria-controls="overview" aria-selected="true">
+                <i class="fas fa-chart-bar me-1"></i> Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tenant-tab" data-bs-toggle="tab" data-bs-target="#tenant"
+                    type="button" role="tab" aria-controls="tenant" aria-selected="false">
+                <i class="fas fa-building me-1"></i> Tenant Information
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="actions-tab" data-bs-toggle="tab" data-bs-target="#actions"
+                    type="button" role="tab" aria-controls="actions" aria-selected="false">
+                <i class="fas fa-bolt me-1"></i> Quick Actions
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="dashboardTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Subscription Overview</h6>
+                        </div>
+                        <div class="card-body">
+                            @if (subscription != null)
+                            {
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">Plan</dt>
+                                    <dd class="col-sm-8">@subscription.PlanName</dd>
+
+                                    <dt class="col-sm-4">Status</dt>
+                                    <dd class="col-sm-8">
+                                        <span class="badge bg-@(subscription.IsActive ? "success" : "warning")">
+                                            @subscription.Status
+                                        </span>
+                                    </dd>
+
+                                    <dt class="col-sm-4">Price</dt>
+                                    <dd class="col-sm-8">$@subscription.PricePerMonth/month</dd>
+
+                                    <dt class="col-sm-4">End Date</dt>
+                                    <dd class="col-sm-8">@subscription.EndDate.ToShortDateString()</dd>
+
+                                    <dt class="col-sm-4">Days Remaining</dt>
+                                    <dd class="col-sm-8">@subscription.DaysUntilExpiration days</dd>
+                                </dl>
+                                <div class="mt-3">
+                                    <a asp-action="Subscription" class="btn btn-sm btn-primary">Manage Subscription</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No active subscription</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Organization Summary</h6>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Organization</dt>
+                                <dd class="col-sm-8">@Model.Name</dd>
+
+                                <dt class="col-sm-4">Domain</dt>
+                                <dd class="col-sm-8"><code>@Model.Domain</code></dd>
+
+                                <dt class="col-sm-4">Status</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-@(Model.IsActive ? "success" : "danger")">
+                                        @(Model.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tenant Information Tab -->
+        <div class="tab-pane fade" id="tenant" role="tabpanel" aria-labelledby="tenant-tab">
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Tenant Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-3">Organization Name</dt>
+                                <dd class="col-sm-9">@Model.Name</dd>
+
+                                <dt class="col-sm-3">Domain</dt>
+                                <dd class="col-sm-9"><code>@Model.Domain</code></dd>
+
+                                <dt class="col-sm-3">Status</dt>
+                                <dd class="col-sm-9">
+                                    <span class="badge bg-@(Model.IsActive ? "success" : "danger")">
+                                        @(Model.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </dd>
+
+                                <dt class="col-sm-3">Billing Email</dt>
+                                <dd class="col-sm-9">@(Model.BillingEmail ?? "Not set")</dd>
+
+                                <dt class="col-sm-3">Billing Address</dt>
+                                <dd class="col-sm-9">@(Model.BillingAddress ?? "Not set")</dd>
+
+                                <dt class="col-sm-3">Created At</dt>
+                                <dd class="col-sm-9">@Model.CreatedAt.ToString("MMMM dd, yyyy")</dd>
+
+                                <dt class="col-sm-3">Total Users</dt>
+                                <dd class="col-sm-9">
+                                    @Model.UserCount users
+                                    @if (subscription != null)
+                                    {
+                                        <span class="text-muted">(limit: @subscription.MaxUsers)</span>
+                                    }
+                                </dd>
+                            </dl>
+
+                            <div class="mt-4">
+                                <a asp-action="Settings" class="btn btn-primary">
+                                    <i class="fas fa-edit me-1"></i> Edit Tenant Settings
+                                </a>
+                                <a asp-action="Users" class="btn btn-secondary">
+                                    <i class="fas fa-users me-1"></i> Manage Users
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Usage Statistics</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <small class="text-muted">Users</small>
+                                <div class="progress mt-1" style="height: 25px;">
+                                    @{
+                                        var maxUsers = subscription?.MaxUsers ?? 5;
+                                        var userPercentage = (Model.UserCount * 100.0 / maxUsers);
+                                    }
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: @userPercentage%"
+                                         aria-valuenow="@Model.UserCount"
+                                         aria-valuemin="0"
+                                         aria-valuemax="@maxUsers">
+                                        @Model.UserCount / @maxUsers
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted">Storage</small>
+                                <div class="progress mt-1" style="height: 25px;">
+                                    @{
+                                        var maxStorage = subscription?.MaxStorageGB ?? 1;
+                                        var usedStorage = 0.45; // 45% for demo
+                                        var storagePercentage = usedStorage * 100;
+                                    }
+                                    <div class="progress-bar bg-info" role="progressbar"
+                                         style="width: @storagePercentage%"
+                                         aria-valuenow="@storagePercentage"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        @(usedStorage * maxStorage)GB / @maxStorage GB
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (subscription != null)
+                            {
+                                <div class="mt-4">
+                                    <h6 class="text-muted">Plan Features</h6>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <i class="fas fa-@(subscription.HasApiAccess ? "check text-success" : "times text-danger") me-2"></i>
+                                            API Access
+                                        </li>
+                                        <li>
+                                            <i class="fas fa-@(subscription.HasAdvancedReporting ? "check text-success" : "times text-danger") me-2"></i>
+                                            Advanced Reporting
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Tab -->
+        <div class="tab-pane fade" id="actions" role="tabpanel" aria-labelledby="actions-tab">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">User Management</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a asp-action="CreateUser" class="btn btn-outline-primary text-start">
+                                    <i class="fas fa-user-plus me-2"></i> Add New User
+                                </a>
+                                <a asp-action="Users" class="btn btn-outline-info text-start">
+                                    <i class="fas fa-users me-2"></i> View All Users
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Subscription & Settings</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a asp-action="Upgrade" class="btn btn-outline-success text-start">
+                                    <i class="fas fa-arrow-up me-2"></i> Upgrade Subscription
+                                </a>
+                                <a asp-action="Subscription" class="btn btn-outline-warning text-start">
+                                    <i class="fas fa-credit-card me-2"></i> Manage Subscription
+                                </a>
+                                <a asp-action="ApiKey" class="btn btn-outline-info text-start">
+                                    <i class="fas fa-key me-2"></i> Manage API Key
+                                </a>
+                                <a asp-action="Settings" class="btn btn-outline-secondary text-start">
+                                    <i class="fas fa-cog me-2"></i> Configure Settings
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+}

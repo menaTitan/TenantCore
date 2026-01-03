@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet new:*)",
+      "Bash(mkdir:*)",
+      "Bash(dotnet sln add:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet add:*)",
+      "Bash(del srcTenantCore.DomainClass1.cs)",
+      "Bash(rm:*)",
+      "Bash(dotnet build:*)",
+      "Bash(tee:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(dotnet run)",
+      "Bash(dotnet ef:*)",
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

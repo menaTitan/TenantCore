@@ -1,0 +1,65 @@
+@model IEnumerable<TenantCore.Application.DTOs.SubscriptionPlanDto>
+
+@{
+    ViewData["Title"] = "Upgrade Subscription";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Upgrade Subscription</h1>
+        <a asp-action="Subscription" class="btn btn-outline-secondary shadow-sm">
+            <i class="fas fa-arrow-left me-2"></i> Back to Subscription
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        @foreach (var plan in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-top border-primary border-4">
+                    <div class="card-body text-center d-flex flex-column">
+                        <h3 class="fw-bold text-primary mb-3">@plan.Name</h3>
+                        <div class="display-4 fw-bold mb-3">$@plan.PricePerMonth<span class="fs-6 text-muted">/mo</span></div>
+                        <p class="text-muted mb-4">@plan.Description</p>
+
+                        <ul class="list-unstyled text-start mx-auto mb-4" style="max-width: 250px;">
+                            <li class="mb-2">
+                                <i class="fas fa-users text-primary me-2"></i> @plan.MaxUsers Users
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-hdd text-primary me-2"></i> @plan.MaxStorageGB GB Storage
+                            </li>
+                            <li class="mb-2">
+                                @if (plan.HasApiAccess)
+                                {
+                                    <i class="fas fa-check text-success me-2"></i> <span>API Access</span>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-times text-muted me-2"></i> <span class="text-muted text-decoration-line-through">API Access</span>
+                                }
+                            </li>
+                            <li class="mb-2">
+                                @if (plan.HasAdvancedReporting)
+                                {
+                                    <i class="fas fa-check text-success me-2"></i> <span>Advanced Reporting</span>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-times text-muted me-2"></i> <span class="text-muted text-decoration-line-through">Advanced Reporting</span>
+                                }
+                            </li>
+                        </ul>
+
+                        <div class="mt-auto">
+                            <form asp-action="Upgrade" method="post">
+                                <input type="hidden" name="NewPlanId" value="@plan.Id" />
+                                <button type="submit" class="btn btn-primary w-100 btn-lg">Select Plan</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

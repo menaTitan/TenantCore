@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Map User to Tenant";
+    var user = ViewBag.User as TenantCore.Infrastructure.Identity.ApplicationUser;
+    var tenants = ViewBag.Tenants as IEnumerable<TenantCore.Application.DTOs.TenantDto>;
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Map User to Tenant</h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>User:</strong> @user?.Email<br />
+                        <strong>Current Tenant:</strong> @(user?.TenantId.HasValue == true ? "Assigned" : "No tenant")
+                    </div>
+
+                    <form asp-action="MapUserToTenant" method="post">
+                        <input type="hidden" name="userId" value="@user?.Id" />
+
+                        <div class="mb-3">
+                            <label for="tenantId" class="form-label">Select New Tenant <span class="text-danger">*</span></label>
+                            <select name="tenantId" id="tenantId" class="form-select" required>
+                                <option value="">Select Tenant</option>
+                                @if (tenants != null)
+                                {
+                                    foreach (var tenant in tenants)
+                                    {
+                                        if (user?.TenantId == tenant.Id)
+                                        {
+                                            <option value="@tenant.Id" selected>@tenant.Name (@tenant.Domain)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@tenant.Id">@tenant.Name (@tenant.Domain)</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Map User</button>
+                            <a asp-action="Users" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
